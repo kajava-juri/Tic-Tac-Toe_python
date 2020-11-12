@@ -42,14 +42,14 @@ def koha_valik(tahvel):
         valik = int(input("See koht ei ole vaba. Vali muu koht 1-9'ni: "))
     return valik
 
-def full_board_check(tahvel):
+def terve_tahvli_kontroll(tahvel):
     return len([x for x in tahvel if x == '#']) == 1
 
 while True:
     i = 1
     mängijad = mängija_valik()
-    game_on = full_board_check(tahvel)
-    while not game_on:
+    mäng_käib = terve_tahvli_kontroll(tahvel)
+    while not mäng_käib:
         asend = koha_valik(tahvel)
         if i % 2 == 0:
             marker = mängijad[1]
@@ -58,4 +58,4 @@ while True:
         märgi_sisestamine(tahvel, marker, int(asend))
         KuvaTahvel(tahvel)
         i += 1
-        game_on = full_board_check(tahvel)
+        mäng_käib = terve_tahvli_kontroll(tahvel)
