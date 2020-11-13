@@ -1,6 +1,6 @@
-tahvel = ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#"]
-def KuvaTahvel(tahvel): 
-    TühiTahvel = """
+board = ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#"]
+def DisplayBoard(board): 
+    BlankBoard = """
 _______________________________
 |         |         |         |
 |    7    |    8    |    9    |
@@ -13,49 +13,58 @@ _______________________________
 |_________|_________|_________|
 """
     for i in range(1,10):
-        if tahvel[i] == "O" or tahvel[i] == "X":
-            TühiTahvel = TühiTahvel.replace(str(i), tahvel[i])
+        if board[i] == "O" or board[i] == "X":
+            BlankBoard = BlankBoard.replace(str(i), board[i])
         else:
-            TühiTahvel = TühiTahvel.replace(str(i), ' ')
-    print(TühiTahvel)
-def mängija_valik():
-    mängija2 = ""
-    mängija1 = input("Vali X või O(täht): ")
-    mängija1 = mängija1.upper()
-    if mängija1 == "X":
-        mängija2 = "O"
-        return mängija2, mängija1
-    if mängija1 == "O":
-        mängija2 = "X"
-        return mängija2, mängija1
+            BlankBoard = BlankBoard.replace(str(i), ' ')
+    print(BlankBoard)
+def player_side():
+    player2 = ""
+    player1 = input("Choose X or O(letter): ")
+    player1 = player1.upper()
+    if player1 == "X":
+        player2 = "O"
+        return player2, player1
+    if player1 == "O":
+        player2 = "X"
+        return player2, player1
 
-def märgi_sisestamine(tahvel, marker, asend):
-    tahvel[asend] = marker
-    return tahvel
+def input_marker(board, marker, position):
+    board[position] = marker
+    return board
 
-def koha_kontroll(tahvel, asend):
-    return tahvel[asend] == "#"
+def space_check(board, position):
+    return board[position] == "#"
 
-def koha_valik(tahvel):
-    valik = int(input("Valik koht 1-9'ni: "))
-    while not koha_kontroll(tahvel, int(valik)):
-        valik = int(input("See koht ei ole vaba. Vali muu koht 1-9'ni: "))
-    return valik
+def space_input(board):
+    choice = int(input("chose place from 1-9: "))
+    while not space_check(board, int(choice)):
+        choice = int(input("This space isn't free. Choose another one from 1-9: "))
+    return choice
 
-def terve_tahvli_kontroll(tahvel):
-    return len([x for x in tahvel if x == '#']) == 1
+def full_board_check(board):
+    filteredBoard = []
+    for x in board:
+        if x == '#':
+            filteredBoard.append(x)
+    return (len(filteredBoard) == 1)
 
 while True:
     i = 1
-    mängijad = mängija_valik()
-    mäng_käib = terve_tahvli_kontroll(tahvel)
-    while not mäng_käib:
-        asend = koha_valik(tahvel)
+    players = player_side()
+    game_on = full_board_check(board)
+    while not game_on:
+        position = space_input(board)
         if i % 2 == 0:
-            marker = mängijad[1]
+            marker = players[1]
         else:
-            marker = mängijad[0]
-        märgi_sisestamine(tahvel, marker, int(asend))
-        KuvaTahvel(tahvel)
+            marker = players[0]
+        input_marker(board, marker, int(position))
+        DisplayBoard(board)
         i += 1
-        mäng_käib = terve_tahvli_kontroll(tahvel)
+        game_on = full_board_check(board)
+    #replay
+    #
+    #
+    #.......
+
