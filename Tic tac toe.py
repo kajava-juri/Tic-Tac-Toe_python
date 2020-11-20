@@ -34,16 +34,16 @@ _______________________________
 
 def player_side():
     player2 = ""
-    player1 = input("Choose X or O(letter): ")
+    player1 = (input("Choose X or O(letter): ")).upper()
     validation = False
-    if player1 == "x" or player1 == "X" or player1 == "o" or player1 == "O":
+    if player1 == "X" or player1 == "O":
         validation = True
     while not validation:
-        if player1 == "x" or player1 == "X" or player1 == "o" or player1 == "O":
+        if player1 == "X" or player1 == "O":
             validation = True
-        elif player1 != "x" or player1 != "X" or player1 != "o" or player1 != "O":
-            player1 = input("Error. Please enter 'X' or 'O': ")
-    player1 = player1.upper()
+        else:
+            player1 = (input("Error. Please enter 'X' or 'O': ")).upper()
+
     if player1 == "X":
         player2 = "O"
         return player2, player1
@@ -74,8 +74,18 @@ def space_input(board, i, players):
                 choice = input("Please enter number 1-9: ")
         except ValueError:
             choice = input("Error. Please enter number 1-9: ")
-    while not space_check(board, int(choice)):
-        choice = int(input("This space isn't free. Choose another one from 1-9: "))
+    while not space_check(board, choice):
+        choice = input("This space isn't free. Choose another one from 1-9: ")
+        validation = False
+        while not validation:
+            try:
+                choice = int(choice)
+                if choice in range(1, 10):
+                    validation = True
+                else:
+                    choice = input("Please enter number 1-9: ")
+            except ValueError:
+                choice = input("Error. Please enter number 1-9: ")
     return choice
 
 def full_board_check(board):
@@ -128,21 +138,22 @@ while True:
     while not game_on:
         position = space_input(board, i, players)
         if i % 2 == 0:
-            marker = players[1]
-        else:
             marker = players[0]
-        input_marker(board, marker, int(position))
+        else:
+            marker = players[1]
+        input_marker(board, marker, position)
         DisplayBoard(board)
         i += 1
         game_on = full_board_check(board)
         if win_check(board, marker):
-            stats.append(f"{turn}) '{marker} won")
+            stats.append(f"{turn}) '{marker}' won")
+            turn += 1
             print(f"'{marker}' won!")
             break
     if game_on:
         stats.append(f"{turn}) Draw")
         turn += 1
-        print("It's a draw! Board id full")
+        print("It's a draw! Board is full")
     if not replay():
         break
     else:
