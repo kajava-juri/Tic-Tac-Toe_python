@@ -1,6 +1,6 @@
 board = ["#", "#", "#", "#", "#", "#", "#", "#", "#", "#"]
 
-b = """
+p = """
 _______________________________
 |         |         |         |
 |    7    |    8    |    9    |
@@ -31,6 +31,7 @@ _______________________________
         else:
             BlankBoard = BlankBoard.replace(str(i), ' ')
     print(BlankBoard)
+    return BlankBoard
 
 def player_side():
     player2 = ""
@@ -43,7 +44,6 @@ def player_side():
             validation = True
         else:
             player1 = (input("Error. Please enter 'X' or 'O': ")).upper()
-
     if player1 == "X":
         player2 = "O"
         return player2, player1
@@ -64,28 +64,11 @@ def space_input(board, i, players):
     if i % 2 == 1:
         player = players[1]
     choice = input(f"{player}'s turn\nchose place from 1-9: ")
-    validation = False
-    while not validation:
-        try:
-            choice = int(choice)
-            if choice in range(1, 10):
-                validation = True
-            else:
-                choice = input("Please enter number 1-9: ")
-        except ValueError:
-            choice = input("Error. Please enter number 1-9: ")
+    n = 10
+    inputText = "Invalid input. Choose another space from 1-9: "
+    choice = input_control(choice, inputText, n, False)
     while not space_check(board, choice):
-        choice = input("This space isn't free. Choose another one from 1-9: ")
-        validation = False
-        while not validation:
-            try:
-                choice = int(choice)
-                if choice in range(1, 10):
-                    validation = True
-                else:
-                    choice = input("Please enter number 1-9: ")
-            except ValueError:
-                choice = input("Error. Please enter number 1-9: ")
+        choice = input_control(input("This space isn't free. Choose another one from 1-9: "), inputText, n, False)
     return choice
 
 def full_board_check(board):
@@ -127,13 +110,31 @@ def replay():
     if question == "n":
         print("_"*35, "Your stats: ", *stats, sep = "\n")
         return False
-    
+
+def input_control(choice, inputText, n, q):
+    validation = False
+    while not validation:
+        if q == True:
+            if choice == "n":
+                return choice
+        try:
+            choice = int(choice)
+            if choice in range(1, n):
+                return choice
+            else:
+                choice = input(inputText)
+        except ValueError:
+            choice = input(inputText)
+
 stats = []
+b = ["#"]
 turn = 1
+inputText = ""
+
 while True:
     i = 1
     players = player_side()
-    print(b)
+    print(p)
     game_on = full_board_check(board)
     while not game_on:
         position = space_input(board, i, players)
@@ -146,15 +147,26 @@ while True:
         i += 1
         game_on = full_board_check(board)
         if win_check(board, marker):
+            result = DisplayBoard(board)
             stats.append(f"{turn}) '{marker}' won")
+            b.append(result)
             turn += 1
             print(f"'{marker}' won!")
             break
-    if game_on:
-        stats.append(f"{turn}) Draw")
-        turn += 1
-        print("It's a draw! Board is full")
+        elif game_on:
+            result = DisplayBoard(board)
+            stats.append(f"{turn}) Draw")
+            b.append(result)
+            turn += 1
+            print("It's a draw! Board is full")
     if not replay():
+        while True:
+            inputText = "Choose any turn to see the board or enter 'n' to exit: "
+            g = input_control(input(inputText), inputText, turn, True)
+            if g == "n":
+                break
+            print(b[g])
+            print(*stats, sep = "\n")
         break
     else:
         i = 1
